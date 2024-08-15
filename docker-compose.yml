@@ -1,0 +1,31 @@
+version: "3.7"
+
+services:
+  fastapi:
+    build:
+      context: ./
+      dockerfile: Dockerfile
+    container_name: fastapi
+    labels:
+      - "traefik.enable=true"
+      - "traefik.http.routers.fastapi.rule=PathPrefix(`/api`)"
+      - "traefik.http.routers.fastapi.entrypoints=web"
+      - "traefik.http.routers.fastapi.middlewares=strip-api-prefix"
+      - "traefik.http.services.fastapi.loadbalancer.server.port=1234"
+    # ports:
+      # - "1234:1234"
+    volumes:
+      - ./app:/app
+    depends_on:
+      - mongodb
+
+  mongodb:
+    image: mongo:latest
+    container_name: mongodb
+    ports:
+      - "27017:27017"
+    volumes:
+      - mongo-data:/data/db
+
+volumes:
+  mongo-data:

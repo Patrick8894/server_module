@@ -1,0 +1,3 @@
+fastapi==0.110.3
+fastapi-standalone-docs==0.1.6
+uvicorn==0.29.0

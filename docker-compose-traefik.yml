@@ -1,0 +1,17 @@
+version: "3.7"
+
+services:
+  traefik:
+    image: traefik:v2.5
+    container_name: traefik
+    command:
+      - "--api.insecure=true"
+      - "--providers.docker=true"
+      - "--entrypoints.web.address=:80"
+    ports:
+      - "8080:8080" # Traefik dashboard
+      - "80:80"     # HTTP
+    volumes:
+      - "/var/run/docker.sock:/var/run/docker.sock:ro"
+    labels:
+      - "traefik.http.middlewares.strip-api-prefix.stripprefix.prefixes=/api"
