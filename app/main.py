@@ -1,10 +1,11 @@
 from fastapi import FastAPI
 from fastapi_standalone_docs import StandaloneDocs
-from .api import startup
+from .api import startup, auth, user
 from starlette.middleware.cors import CORSMiddleware
 from .api import *
 from .api.middleware import AuthMiddleware
 from .common.constants import ENV, TEST_ENV
+from .business_logic_layer import get_user_service
 
 if ENV in TEST_ENV:
     server = FastAPI(root_path="/api")
@@ -21,9 +22,13 @@ server.add_middleware(
     allow_methods=["*"],
     allow_headers=["*"],
 )
-server.add_middleware(AuthMiddleware, crypto_service=get_crypto_service())
+server.add_middleware(AuthMiddleware, user_service=get_user_service())
 
 server.include_router(startup.router)
+
+server.include_router(auth.router)
+
+server.include_router(user.router)
 
 @server.get("/")
 def read_root():

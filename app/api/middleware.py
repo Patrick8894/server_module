@@ -1,26 +1,29 @@
 from ..common.logger import middleware_logger
-from fastapi import HTTPException
 from ..common.constants import ENV, TEST_ENV
-from ..business_logic_layer.crypto_service import CryptoService
+from ..business_logic_layer.user_service import UserService
 from starlette.middleware.base import BaseHTTPMiddleware
+from starlette.responses import JSONResponse
 
 class AuthMiddleware(BaseHTTPMiddleware):
-    def __init__(self, app, crypto_service: CryptoService):
+    def __init__(self, app, user_service: UserService):
         super().__init__(app)
-        self._crypto_service = crypto_service
+        self._user_service = user_service
 
     async def dispatch(self, request, call_next):
-        if (path := request.url.path) in ['docs', 'openapi.json'] or path.startswith("/auth"):
+
+        if (path := request.url.path) == '/api/openapi.json' or path.startswith("/api/auth") or path.startswith("/api/docs") or path.startswith("/api/redoc"):
             middleware_logger.info("auth request")
             return await call_next(request)
 
-        if ENV in TEST_ENV:
-            middleware_logger.info("auth pass in test env")
-            return await call_next(request)
+        # if ENV in TEST_ENV:
+        #     middleware_logger.info("auth pass in test env")
+        #     return await call_next(request)
         
-        token = request.cookies.get("access_token", "")
-        if (user_info := await self._crypto_service.decrypt_token(token)) is None:
-            raise HTTPException(status_code=401, detail="Unauthorized")
+        if not (token := request.cookies.get("access_token")):
+            return JSONResponse(status_code=401, content={"detail": "Unauthorized"})
+
+        if (user_info := self._user_service.decode_user_token(token)) is None:
+            return JSONResponse(status_code=500, content={"detail": "Failed to decrypt token"})
 
         request.state.user_info = user_info
 

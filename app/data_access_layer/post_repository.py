@@ -3,7 +3,7 @@ from ..common.logger import post_logger
 from ..common.decorators import singleton
 from motor.motor_asyncio import AsyncIOMotorCollection
 from datetime import datetime
-from typing import Dict
+from typing import Dict, List
 
 @singleton
 class UserRepository(BaseRepository):
@@ -17,7 +17,6 @@ class UserRepository(BaseRepository):
         self._counter = counter_collection
 
     async def create_post(self, name: str, title: str, password: str) -> bool:
-
         id = await self.get_next_sequence(self._collection._name)
             
         user = {
@@ -34,17 +33,13 @@ class UserRepository(BaseRepository):
         return await self._collection.insert_one(user)
     
     async def get_post(self, _id: str) -> Dict:
-            
         return await self._collection.find_one(filter={"_id": _id})
     
-    async def get_posts(self) -> list:
-            
+    async def get_posts(self) -> List:
         return await self._collection.find_many(filter={})
     
     async def update_post(self, _id: str, update: Dict) -> bool:
-
         return await self._collection.update_one(filter={"_id": _id}, update={"$set": update})
     
     async def delete_post(self, _id: str) -> bool:
-            
         return await self._collection.delete_one(filter={"_id": _id})

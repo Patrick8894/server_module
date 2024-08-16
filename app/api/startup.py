@@ -6,5 +6,6 @@ router = APIRouter()
 
 @router.on_event("startup")
 async def startup_event():
+    
     startup_logger.info("Starting up!")
     startup_logger.info(f"Using ENV File: {ENV_FILE}")

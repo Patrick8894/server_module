@@ -22,6 +22,8 @@ api_logger = get_logger("api")
 
 middleware_logger = get_logger("middleware")
 
+token_logger = get_logger("token")
+
 crypto_logger = get_logger("crypto")
 
 user_logger = get_logger("user")
