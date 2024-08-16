@@ -1,17 +1,18 @@
-from fastapi import FastAPI, APIRouter
+from fastapi import FastAPI
 from fastapi_standalone_docs import StandaloneDocs
-from .common.constants import ENV, TEST_ENV
 from .api import startup
 from starlette.middleware.cors import CORSMiddleware
 from .api import *
 from .api.middleware import AuthMiddleware
-import logging
+from .common.constants import ENV, TEST_ENV
 
-logging.basicConfig(level=logging.INFO)
-logger = logging.getLogger(__name__)
-
-server = FastAPI(root_path="/api")
-# StandaloneDocs(app=server)
+if ENV in TEST_ENV:
+    server = FastAPI(root_path="/api")
+    StandaloneDocs(app=server)
+    server.docs_url = "/api/docs"
+    server.redoc_url = "/api/redoc"
+else:
+    server = FastAPI(root_path="/api", docs_url=None, redoc_url=None)
 
 server.add_middleware(
     CORSMiddleware,

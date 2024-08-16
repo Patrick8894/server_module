@@ -1,6 +1,6 @@
 import logging
 
-def get_logger(name):
+def get_logger(name: str) -> logging.Logger:
     logger = logging.getLogger(name)
     logger.setLevel(logging.INFO)
     logger.propagate = False
@@ -23,3 +23,7 @@ api_logger = get_logger("api")
 middleware_logger = get_logger("middleware")
 
 crypto_logger = get_logger("crypto")
+
+user_logger = get_logger("user")
+
+post_logger = get_logger("post")
