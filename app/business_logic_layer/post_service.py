@@ -2,9 +2,10 @@ from .base_service import BaseService
 from .user_service import UserService
 from ..data_access_layer.post_repository import PostRepository
 from ..common.logger import user_logger
-from ..common.constants import ACCOUNT_SECRET
+from ..common.decorators import singleton
 from typing import Dict, List
 
+@singleton
 class PostService(BaseService):
 
     _logger = user_logger

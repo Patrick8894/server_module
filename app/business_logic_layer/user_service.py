@@ -2,10 +2,12 @@ from .base_service import BaseService
 from .crypto_service import CryptoService
 from .token_service import TokenService
 from ..data_access_layer.user_repository import UserRepository
+from ..common.decorators import singleton
 from ..common.logger import user_logger
 from ..common.constants import ACCOUNT_SECRET
 from typing import Dict, List
 
+@singleton
 class UserService(BaseService):
     _logger = user_logger
 
