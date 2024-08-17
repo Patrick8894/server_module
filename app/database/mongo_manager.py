@@ -8,7 +8,7 @@ import asyncio
 class AsyncMongoManager:
     COLLECTION = Literal["users", "posts"]
     def __init__(self):
-        self._client = AsyncIOMotorClient(f'mongodb://{MONGO_HOST}:{MONGO_PORT}')
+        self._client = AsyncIOMotorClient(MONGO_HOST, MONGO_PORT)
         self._db = self._client[DB_NAME]
 
     def get_collection(self, collection_name: COLLECTION) -> AsyncIOMotorCollection:

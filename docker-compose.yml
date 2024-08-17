@@ -5,7 +5,7 @@ services:
     build:
       context: ./
       dockerfile: Dockerfile
-    container_name: fastapi
+    # container_name: fastapi
     labels:
       - "traefik.enable=true"
       - "traefik.http.routers.fastapi.rule=PathPrefix(`/api`)"
@@ -17,13 +17,21 @@ services:
       - mongodb
     environment:
       - ENV_FILE=${ENV_FILE}
+    networks:
+      - traefik
 
   mongodb:
     image: mongo:latest
-    container_name: mongodb
+    # container_name: mongodb
     volumes:
       - mongo-data:/data/db
     command: ["mongod", "--quiet", "--logpath", "/dev/null", "--logappend"]
+    networks:
+      - traefik
 
 volumes:
   mongo-data:
+
+networks:
+  traefik:
+    external: true

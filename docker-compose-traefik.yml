@@ -6,6 +6,7 @@ services:
     container_name: traefik
     command:
       - "--api.insecure=true"
+      - "--api.dashboard=true"
       - "--providers.docker=true"
       - "--entrypoints.web.address=:80"
     ports:
@@ -13,3 +14,9 @@ services:
       - "80:80"     # HTTP
     volumes:
       - "/var/run/docker.sock:/var/run/docker.sock:ro"
+    networks:
+      - traefik
+
+networks:
+  traefik:
+    name: traefik
