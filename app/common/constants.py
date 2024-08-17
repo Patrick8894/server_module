@@ -1,7 +1,7 @@
 from dotenv import load_dotenv
 import os
 
-ENV_FILE = os.getenv("ENV_FILE", "prod")
+ENV_FILE = os.getenv("ENV_FILE", "DEV")
 
 abs_path = os.path.abspath(os.path.dirname(__file__))
 env_path = os.path.join(abs_path, "../env/", f"{ENV_FILE}.env")

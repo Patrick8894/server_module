@@ -1,14 +1,14 @@
 from .base_service import BaseService
 from .user_service import UserService
 from ..data_access_layer.post_repository import PostRepository
-from ..common.logger import user_logger
+from ..common.logger import post_logger
 from ..common.decorators import singleton
 from typing import Dict, List
 
 @singleton
 class PostService(BaseService):
 
-    _logger = user_logger
+    _logger = post_logger
 
     def __init__(self, user_service: UserService, post_repositoy: PostRepository):
         self._user_service = user_service
