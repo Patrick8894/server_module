@@ -2,10 +2,10 @@ from logging import Logger
 from motor.motor_asyncio import AsyncIOMotorCollection
 from ..common.decorators import suppress_exceptions
 from typing import Dict, Optional, List
+import uuid
 
 class BaseRepository:
     _logger: Logger
-    _counter: AsyncIOMotorCollection
 
     class CollectionWrapper():
         def __init__(self, collection: AsyncIOMotorCollection):
@@ -66,12 +66,12 @@ class BaseRepository:
         async def aggregate(self, pipeline: List[Dict]) -> List[Dict]:
             return await self._collection.aggregate(pipeline).to_list(None)
         
-    async def get_next_sequence(self, sequence_name: str) -> int:
-        counter = await self._counter.find_one_and_update(
-            {"_id": sequence_name},
-            {"$inc": {"seq": 1}},
-            return_document=True,
-            upsert=True,
-        )
+        async def generate_id(self) -> str:
+            while True:
+                new_uuid = str(uuid.uuid4())
 
-        return counter["seq"]
+                if (data := await self.find_one({"_id": new_uuid})) is None:
+                    return None
+                
+                if not data:
+                    return new_uuid

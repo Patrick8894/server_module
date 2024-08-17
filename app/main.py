@@ -1,6 +1,6 @@
 from fastapi import FastAPI
 from fastapi_standalone_docs import StandaloneDocs
-from .api import startup, auth, user
+from .api import startup, auth, user, post
 from starlette.middleware.cors import CORSMiddleware
 from .api import *
 from .api.middleware import AuthMiddleware
@@ -30,7 +30,9 @@ server.include_router(auth.router)
 
 server.include_router(user.router)
 
-@server.get("/")
+server.include_router(post.router)
+
+@server.get("")
 def read_root():
     return {"Hello World"}
 

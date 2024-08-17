@@ -18,7 +18,10 @@ class UserCreateModel(BaseModel):
     secret: str
     password: str
 
-@router.post("/login")
+class DefaultResponse(BaseModel):
+    detail: str
+
+@router.post("/login", description="Login to the system.", response_model=DefaultResponse)
 async def login(request: Request, response: Response, user_login: UserLoginModel, user_service: UserService = Depends(_user_service)):
 
     if request.cookies.get("access_token"):
@@ -28,13 +31,13 @@ async def login(request: Request, response: Response, user_login: UserLoginModel
         raise HTTPException(status_code=401, detail="Login failed")
     
     if (token := user_service.generate_user_token(user_info)) is None:
-        raise HTTPException(status_code=500, detail="Internal Server Error")
+        raise HTTPException(status_code=500, detail="Failed to generate token")
     
     response.set_cookie("access_token", token)
 
     return {"detail": "login success"}
 
-@router.post("/logout")
+@router.post("/logout", description="Logout from the system.", response_model=DefaultResponse)
 async def logout(request: Request, response: Response):
 
     if not (request.cookies.get("access_token")):
@@ -44,7 +47,7 @@ async def logout(request: Request, response: Response):
 
     return {"detail": "logout success"}
 
-@router.post("/register")
+@router.post("/register", description="Register to the system.", response_model=DefaultResponse)
 async def register(user_create: UserCreateModel, user_service: UserService = Depends(_user_service)):
 
     if await user_service.get_user(user_create.user_id):

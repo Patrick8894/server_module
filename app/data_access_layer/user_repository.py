@@ -24,7 +24,6 @@ class UserRepository(BaseRepository):
             "password": password,
             "password_salt": password_salt,
             "title": title,
-            "post_ids": [],
             "secret": secret,
             "created_timestamp": datetime.now().timestamp(),
             "edited_timestamp": datetime.now().timestamp(),

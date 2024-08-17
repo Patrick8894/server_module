@@ -22,8 +22,11 @@ class AuthMiddleware(BaseHTTPMiddleware):
         if not (token := request.cookies.get("access_token")):
             return JSONResponse(status_code=401, content={"detail": "Unauthorized"})
 
-        if (user_info := self._user_service.decode_user_token(token)) is None:
+        if (user_info := await self._user_service.decode_user_token(token)) is None:
             return JSONResponse(status_code=500, content={"detail": "Failed to decrypt token"})
+        
+        if not (await self._user_service.get_user(user_info['user_id'])):
+            return JSONResponse(status_code=404, content={"detail": "User is already deleted"})
 
         request.state.user_info = user_info
 
