@@ -3,18 +3,20 @@ from ..business_logic_layer.token_service import TokenService
 from ..business_logic_layer.user_service import UserService
 from ..data_access_layer.user_repository import UserRepository
 import pytest
-import sys
+import pytest_asyncio
 from . import mock_motor_collection
+from typing import Dict
 
 class TestUserService:
 
-    @pytest.fixture(autouse=True)
-    def setup(self, mock_motor_collection):
+    @pytest_asyncio.fixture(autouse=True)
+    async def setup(self, mock_motor_collection: Dict):
         self.db = mock_motor_collection
         self.crypto_service = CryptoService()
         self.token_service = TokenService(self.crypto_service)
         self.user_repository = UserRepository(self.db['users'])
         self.service = UserService(self.crypto_service, self.token_service, self.user_repository)
+        await self.user_repository._collection._collection.delete_many({})
 
     @pytest.mark.asyncio
     async def test_register_and_login(self):
@@ -26,8 +28,6 @@ class TestUserService:
 
         assert (token := self.service.generate_user_token(user_info))
         assert await self.service.decode_user_token(token) == user_info
-
-        await self.user_repository._collection._collection.delete_many({})
 
     @pytest.mark.asyncio
     async def test_user_crud(self):
@@ -48,5 +48,3 @@ class TestUserService:
 
         assert await self.service.delete_user("test_user")
         assert not await self.service.get_user("test_user")
-
-        await self.user_repository._collection._collection.delete_many({})

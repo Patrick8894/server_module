@@ -6,4 +6,7 @@ def mock_motor_collection():
     client = AsyncMongoMockClient()
     db = client["test_db"]
     
-    return db
+    return {
+        'users': db['users'],
+        'posts': db['posts']
+    }

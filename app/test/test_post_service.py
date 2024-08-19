@@ -5,12 +5,14 @@ from ..business_logic_layer.post_service import PostService
 from ..data_access_layer.user_repository import UserRepository
 from ..data_access_layer.post_repository import PostRepository
 import pytest
+import pytest_asyncio
 from . import mock_motor_collection
+from typing import Dict
 
 class TestPostService:
 
-    @pytest.fixture(autouse=True)
-    def setup(self, mock_motor_collection):
+    @pytest_asyncio.fixture(autouse=True)
+    async def setup(self, mock_motor_collection: Dict):
         self.db = mock_motor_collection
         self.crypto_service = CryptoService()
         self.token_service = TokenService(self.crypto_service)
@@ -18,6 +20,8 @@ class TestPostService:
         self.user_service = UserService(self.crypto_service, self.token_service, self.user_repository)
         self.post_repository = PostRepository(self.db['posts'])
         self.service = PostService(self.user_service, self.post_repository)
+        await self.user_repository._collection._collection.delete_many({})
+        await self.post_repository._collection._collection.delete_many({})
 
     @pytest.mark.asyncio
     async def test_post_crud(self):
@@ -37,6 +41,3 @@ class TestPostService:
 
         assert await self.service.delete_post(id)
         assert not await self.service.get_post(id)
-
-        await self.user_repository._collection._collection.delete_many({})
-        await self.post_repository._collection._collection.delete_many({})
