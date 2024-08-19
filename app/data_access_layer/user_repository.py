@@ -14,7 +14,7 @@ class UserRepository(BaseRepository):
 
     def __init__(self, user_collection: AsyncIOMotorCollection):
         self._collection = self.CollectionWrapper(user_collection)
-        self._collection.create_index([('name', 1)])
+        # self._collection.create_index([('name', 1)])
 
     async def create_user(self, user_id: str, user_name: str, title: str, secret: str, password: str, password_salt: str) -> bool:
             

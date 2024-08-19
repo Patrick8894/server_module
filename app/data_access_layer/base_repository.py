@@ -20,8 +20,8 @@ class BaseRepository:
                 return wrapper
             return attr
         
-        def create_index(self, keys: List, **kwargs):
-            self._collection.create_index(keys, **kwargs)
+        async def create_index(self, keys: List, **kwargs):
+            await self._collection.create_index(keys, **kwargs)
         
         async def find_one(self, filter: Dict, projection: Optional[Dict] = None) -> Dict:
             if (result := await self._collection.find_one(filter=filter, projection=projection)) is None:

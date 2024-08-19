@@ -20,16 +20,19 @@ class PostService(BaseService):
     async def get_posts(self) -> List[Dict]:
         return await self._post.get_posts()
     
-    async def create_post(self, user_id: str, title: str, description: str) -> bool:
+    async def create_post(self, user_id: str, title: str, description: str) -> str:
 
         if not (id := await self._post.generate_id()):
             return False
 
-        return await self._post.create_post(id, title, description, user_id)
+        if not await self._post.create_post(id, title, description, user_id):
+            return False
+        
+        return id
     
     async def update_post(self, post_id: str, title: str, description: str) -> bool:
         
-        return await self._post.update_post({"_id": post_id}, {"title": title, "description": description})
+        return await self._post.update_post(post_id, {"title": title, "description": description})
     
     async def delete_post(self, post_id: str) -> bool:
         

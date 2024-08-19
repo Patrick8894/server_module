@@ -14,7 +14,7 @@ class PostRepository(BaseRepository):
 
     def __init__(self, post_collection: AsyncIOMotorCollection):
         self._collection = self.CollectionWrapper(post_collection)
-        self._collection.create_index([('title', 1)])
+        # self._collection.create_index([('title', 1)])
 
     async def create_post(self, _id: str, title: str, description: str, user_id: str) -> bool:
             
@@ -40,6 +40,8 @@ class PostRepository(BaseRepository):
                 {"$project": {"_id": 0, "post_id": "$_id", "title": 1, "description": 1, "user_id": 1, "user_name": "$user.name", "created_timestamp": 1, "edited_timestamp": 1}}
             ]
         )): return post[0]
+
+        return {}
     
     async def get_posts(self) -> List:
             
