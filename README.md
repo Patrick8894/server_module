@@ -1,5 +1,7 @@
 ## Server Module
 
+A backend application built with Python and FastAPI for user registration, authentication, post creation, and CRUD operations on users and posts. It uses MongoDB as the database and is containerized with Docker for quick deployment. The project follows a layered architecture (presentation, business logic, data access) for maintainability and utilizes OOP concepts like injection and inheritance for extensibility.
+
 ### To start traefik, run the command:
 ```
 docker compose -f docker-compose-traefik.yml up --build
